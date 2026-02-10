@@ -1,4 +1,6 @@
-# Oneliner install
+# Chezmoi
+
+## Oneliner install
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply <YOUR_GIT_REPO>
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:anpom21/dotfiles.git
 ```
