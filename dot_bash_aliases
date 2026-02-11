@@ -1,2 +1,103 @@
-source ~/desktop.bashrc
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias meshlab='~/Desktop/MeshLab.AppImage'
+alias ..='cd ..'
+alias ms='cd ~/Documents/speciale/aris_master'
+alias sdur2='ssh apommerencke@sdur-2.sandbox.tek.sdu.dk'
+alias battery_saver_reboot='sudo prime-select intel; sudo reboot'
+alias obsidian='obsidian &'
+alias ssh_ts='ssh root@asus-server.gazelle-shilling.ts.net'
+alias ssh_local='ssh root@192.168.0.154'
+#alias aris='cd ~/Documents/ARIS/'
 
+if [ -f ~/aris.bashrc ]; then
+    source ~/aris.bashrc
+fi
+if [ -f ~/desktop.bashrc ]; then
+    source ~/desktop.bashrc
+fi
+if [ -f ~/ap.bashrc ]; then
+    source ~/ap.bashrc
+fi
+
+# ---------------------------------- RCLONE ---------------------------------- #
+alias rpush='rclone copy ~/cloud cloud_storage: \
+  --exclude-from ~/.config/rclone/excludes.txt \
+  -P \
+  --update'
+
+alias rpull='rclone copy cloud_storage: ~/cloud \
+  --exclude-from ~/.config/rclone/excludes.txt \
+  -P \
+  --update'
+
+alias rpush-dry='rclone copy ~/cloud cloud_storage: \
+--exclude-from ~/.config/rclone/excludes.txt \
+--dry-run -P \
+--update'
+
+rpush_any() {
+  rclone copy "$1" cloud_storage: \
+    --exclude-from ~/.config/rclone/excludes.txt \
+    --update \
+    -P
+}
+
+# ------------------------ Activate virtual environment ------------------------ #
+aenv() {
+    [ -z "$1" ] && { echo "Usage: aenv <path-to-venv>"; return 2; }
+    # works for venv or conda env dir with 'bin/activate'
+    # shellcheck disable=SC1091
+    source "$1/bin/activate"
+}
+
+# ------------------------ Git add, commit, push ------------------------ #
+function fgit(){
+    git add .;
+    git commit -m "$1";
+    git push; }
+
+
+# ------------------------ Open nautilus from terminal ----------------------- #
+nau() {
+    # If no argument given, open current directory
+    [ -z "$1" ]
+    {
+        nohup nautilus . > /dev/null 2>&1 & # To open a new instance of nautilus use -w
+        return 0
+    }
+    # Else open given directory
+
+    nohup nautilus "$1" > /dev/null 2>&1 &
+}
+
+
+# --------------------------------- Bash only -------------------------------- #
+if [ -n "$BASH_VERSION" ]; then
+# ----- Git branch in terminal ----- #
+    # Add in ~/.bashrc or ~/.bash_profile
+    function parse_git_branch () {
+    # The line below is changed.
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\ \[\1]/'
+    }
+    
+    RED="\[\033[01;31m\]"
+    YELLOW="\[\033[01;33m\]"
+    GREEN="\[\033[01;32m\]"
+    BLUE="\[\033[01;34m\]"
+    NO_COLOR="\[\033[00m\]"
+
+    # without host
+    #PS1="$GREEN\u$NO_COLOR:$BLUE\w$RED\$(parse_git_branch)$NO_COLOR\$ "
+    # with host
+    PS1="$GREEN\u@\h$NO_COLOR:$BLUE\w$RED\$(parse_git_branch)$NO_COLOR\$ "
+fi
+
+
+# ------------------------ ARIS CLI / Scripts at hand ------------------------ #
+# >>> aris-cli initialize >>>
+alias aris='/home/ap/synced/ARIS/scripts-at-hand/run.sh'
+source <(aris completion bash)
+# <<< aris-cli initialize <<<
