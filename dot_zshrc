@@ -1,3 +1,31 @@
+# Download Zinit, if it's not there yet
+
+# Check if zoxide is installed and install it if not
+if ! command -v zoxide &> /dev/null; then
+    echo "zoxide not found, installing..."
+    sudo apt install -y zoxide
+fi
+# Check if fdfind is installed and install it if not
+if ! command -v fdfind &> /dev/null; then
+    echo "fdfind not found, installing..."
+    sudo apt install -y fd-find
+fi
+if ! command -v rg &> /dev/null; then
+    echo "ripgrep not found, installing..."
+    sudo apt install -y ripgrep
+fi
+if ! command -v lsd &> /dev/null; then
+    echo "lsd not found, installing..."
+    sudo apt install -y lsd
+fi
+# Check if JetBrainsMono exists in ~/.fonts and install it if not
+if ! fc-list | grep -q "JetBrains"; then
+    echo "JetBrains Mono Nerd Font not found, installing..."
+    mkdir -p ~/.fonts 
+    curl -fLo /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip 
+    unzip -o /tmp/JetBrainsMono.zip -d ~/.fonts 
+    fc-cache -fv
+fi  
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -8,7 +36,6 @@ fi
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
-# Download Zinit, if it's not there yet
 if [ ! -d "$ZINIT_HOME" ]; then
    mkdir -p "$(dirname $ZINIT_HOME)"
    git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
@@ -23,6 +50,8 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f ~/.p10k-custom.zsh ]] || source ~/.p10k-custom.zsh
+
 
 
 # Add in zsh plugins
@@ -55,15 +84,18 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+
+export PATH="$HOME/.local/bin:$PATH"
+
+
 
 # Aliases
 alias ls='ls --color'
 
 #eval "$(fzf --zsh)"
 bindkey '^r' fzf-history-widget
-#eval "$(zoxide init --cmd cd zsh)"
-eval "$(zoxide init zsh)"
+
  # ---------------------------------------------------------------------------- #
  #                            Oh My Zsh configuration                           #
  # ---------------------------------------------------------------------------- #
@@ -189,6 +221,9 @@ bindkey -s '^Xgc' $'git commit -m ""\C-b'
 
 
 autoload zmv
+# ----------------------------------- Alias ---------------------------------- #
+# alias l='lsd'
+alias fd='fdfind'
 # ------------------------------- Suffix alias ------------------------------- #
 alias -s py='code'
 alias -s md='code'
@@ -235,17 +270,21 @@ _auto_venv_chpwd() {
 add-zsh-hook chpwd _auto_venv_chpwd
 _auto_venv_chpwd  # run once for the current directory
 # ------------------------------------ END ----------------------------------- #
-# # >>> aris-cli initialize >>>
-# export PATH="/home/ap/cloud/ARIS/aris-cli/.venv/bin:$PATH"
-# eval "$(_ARIS_COMPLETE=zsh_source aris)"
-# # <<< aris-cli initialize <<<
+
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init --cmd cd zsh)"
+  alias z='zoxide'
+  zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+fi
+
+
+
+
 
 #>>> aris-cli initialize >>>
 aris() {
-  /home/ap/cloud/ARIS/aris-cli/run.sh "$@"
+  '/home/ap/cloud/ARIS/repositories/scripts-at-hand/run.sh' "$@"
 }
-source "/home/ap/cloud/ARIS/aris-cli/logs/.completion_stub.zsh"
+source '/home/ap/cloud/ARIS/repositories/scripts-at-hand/logs/.completion_stub.zsh'
 #<<< aris-cli initialize <<<
 
-
-alias l='lsd'
