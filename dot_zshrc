@@ -221,9 +221,7 @@ bindkey -s '^Xgc' $'git commit -m ""\C-b'
 
 
 autoload zmv
-# ----------------------------------- Alias ---------------------------------- #
-# alias l='lsd'
-alias fd='fdfind'
+
 # ------------------------------- Suffix alias ------------------------------- #
 alias -s py='code'
 alias -s md='code'
@@ -281,10 +279,38 @@ fi
 
 
 
-#>>> aris-cli initialize >>>
-aris() {
-  '/home/ap/cloud/ARIS/repositories/scripts-at-hand/run.sh' "$@"
-}
-source '/home/ap/cloud/ARIS/repositories/scripts-at-hand/logs/.completion_stub.zsh'
-#<<< aris-cli initialize <<<
 
+
+# >>> aris-cli initialize >>>
+ARIS_CLI_ROOT="/home/ap/cloud/ARIS/aris-cli"
+aris() {
+  "$ARIS_CLI_ROOT/run.sh" "$@"
+}
+source "$ARIS_CLI_ROOT/logs/.completion_stub.zsh"
+# <<< aris-cli initialize <<<
+
+# ----------------------------------- Alias ---------------------------------- #
+# alias l='lsd'
+alias fd='fdfind'
+alias video_list='for d in /sys/class/video4linux/*; do echo "$(basename "$d"): $(cat "$d/name")"; done'
+alias start_queue='tmux new-session -d -s queue 2>/dev/null; tmux send-keys -t queue "/home/ap/cloud/master/aris_master/.venv/bin/python3 /home/ap/cloud/master/aris_master/scripts/queue_manager.py" C-m; tmux attach-session -t queue'
+
+alias zrc='source ~/.zshrc'
+# --------------------------------- Functions -------------------------------- #
+pipe_cp() {
+  local dest="$1"
+  [ -z "$dest" ] && { echo "usage: pipe_cp /path/to/destination"; return 1; }
+  mkdir -p -- "$dest" || return 1
+  while IFS= read -r file; do
+    cp -- "$file" "$dest"/
+  done
+}
+pipe_mv() {
+  local dest="$1"
+  [ -z "$dest" ] && { echo "usage: pipe_mv /path/to/destination"; return 1; }
+  mkdir -p -- "$dest" || return 1
+  while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    mv -- "$file" "$dest"/ || echo "failed: $file" >&2
+  done
+}
