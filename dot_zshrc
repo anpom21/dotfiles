@@ -41,6 +41,7 @@ if [ ! -d "$ZINIT_HOME" ]; then
    git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
+source $ZSH/oh-my-zsh.sh
 
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
@@ -79,6 +80,92 @@ setopt hist_find_no_dups
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
+# Restore Ctrl/Alt+Arrow behavior: map common terminal sequences to word movement
+# Some terminals send different sequences; these cover common xterm/kitty/alacritty cases
+bindkey '\e[1;5C' forward-word
+bindkey '\e[1;5D' backward-word
+bindkey '\e[5C' forward-word
+bindkey '\e[5D' backward-word
+bindkey '\e[3;5~' delete-char
+bindkey '\e[1;3C' forward-word
+bindkey '\e[1;3D' backward-word
+
+# # Preserve original WORDCHARS so we can switch behavior between widgets
+# ORIGINAL_WORDCHARS=${ORIGINAL_WORDCHARS:-$WORDCHARS}
+
+# # Small-step word movement/killing: treat '/', '_', '-' as separators
+# small_forward_word() {
+#   local save=$WORDCHARS
+#   WORDCHARS=${WORDCHARS//\//}
+#   WORDCHARS=${WORDCHARS//_/}
+#   WORDCHARS=${WORDCHARS//-/}
+#   WORDCHARS=${WORDCHARS//./}
+#   zle forward-word
+#   WORDCHARS=$save
+# }
+# zle -N small-forward-word small_forward_word
+
+# small_backward_word() {
+#   local save=$WORDCHARS
+#   WORDCHARS=${WORDCHARS//\//}
+#   WORDCHARS=${WORDCHARS//_/}
+#   WORDCHARS=${WORDCHARS//-/}
+#   WORDCHARS=${WORDCHARS//./}
+#   zle backward-word
+#   WORDCHARS=$save
+# }
+# zle -N small-backward-word small_backward_word
+
+# small_kill_word() {
+#   local save=$WORDCHARS
+#   WORDCHARS=${WORDCHARS//\//}
+#   WORDCHARS=${WORDCHARS//_/}
+#   WORDCHARS=${WORDCHARS//-/}
+#   WORDCHARS=${WORDCHARS//./}
+#   zle kill-word
+#   WORDCHARS=$save
+# }
+# zle -N small-kill-word small_kill_word
+
+# small_backward_kill_word() {
+#   local save=$WORDCHARS
+#   WORDCHARS=${WORDCHARS//\//}
+#   WORDCHARS=${WORDCHARS//_/}
+#   WORDCHARS=${WORDCHARS//-/}
+#   WORDCHARS=${WORDCHARS//./}
+#   zle backward-kill-word
+#   WORDCHARS=$save
+# }
+# zle -N small-backward-kill-word small_backward_kill_word
+
+# # Large-step widgets restore original WORDCHARS (jump over path separators)
+# large_forward_word() { local save=$WORDCHARS; WORDCHARS=$ORIGINAL_WORDCHARS; zle forward-word; WORDCHARS=$save; }
+# zle -N large-forward-word large_forward_word
+# large_backward_word() { local save=$WORDCHARS; WORDCHARS=$ORIGINAL_WORDCHARS; zle backward-word; WORDCHARS=$save; }
+# zle -N large-backward-word large_backward_word
+# large_kill_word() { local save=$WORDCHARS; WORDCHARS=$ORIGINAL_WORDCHARS; zle kill-word; WORDCHARS=$save; }
+# zle -N large-kill-word large_kill_word
+# large_backward_kill_word() { local save=$WORDCHARS; WORDCHARS=$ORIGINAL_WORDCHARS; zle backward-kill-word; WORDCHARS=$save; }
+# zle -N large-backward-kill-word large_backward_kill_word
+
+# # Bind Ctrl+Arrow to small-step widgets and Alt/Meta+Arrow to large-step widgets
+# bindkey '\e[1;5C' small-forward-word
+# bindkey '\e[1;5D' small-backward-word
+# bindkey '\e[5C' small-forward-word
+# bindkey '\e[5D' small-backward-word
+
+# bindkey '\e[1;3C' large-forward-word
+# bindkey '\e[1;3D' large-backward-word
+# bindkey '\e[3;3~' large-backward-kill-word
+
+# # Common Ctrl+Backspace sequences vary by terminal; capture later if needed.
+# # Try binding some common Ctrl+Backspace escape sequences to the small backward-kill widget.
+# # If these don't match your terminal, run `cat -v` and press Ctrl+Backspace to get the exact sequence.
+# bindkey '\e[127;5u' small-backward-kill-word  # xterm/kitty modifyOtherKeys style
+# bindkey '\e[8;5u' small-backward-kill-word    # alternate modify keys form
+# bindkey '\e[1;5H' small-backward-kill-word   # some terminals
+# bindkey '\e[1;5~' small-backward-kill-word   # fallback
+
 # Completion Styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
@@ -93,7 +180,29 @@ export PATH="$HOME/.local/bin:$PATH"
 # Aliases
 alias ls='ls --color'
 
-#eval "$(fzf --zsh)"
+for fzf_file in \
+  /usr/share/fzf/key-bindings.zsh \
+  /usr/local/share/fzf/key-bindings.zsh \
+  /usr/share/doc/fzf/examples/key-bindings.zsh \
+  ~/.fzf/shell/key-bindings.zsh \
+  ~/.fzf.zsh; do
+  if [[ -f "$fzf_file" ]]; then
+    source "$fzf_file"
+    break
+  fi
+done
+
+for fzf_file in \
+  /usr/share/fzf/completion.zsh \
+  /usr/local/share/fzf/completion.zsh \
+  /usr/share/doc/fzf/examples/completion.zsh \
+  ~/.fzf/shell/completion.zsh; do
+  if [[ -f "$fzf_file" ]]; then
+    source "$fzf_file"
+    break
+  fi
+done
+
 bindkey '^r' fzf-history-widget
 
  # ---------------------------------------------------------------------------- #
@@ -173,7 +282,6 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -294,8 +402,9 @@ source "$ARIS_CLI_ROOT/logs/.completion_stub.zsh"
 alias fd='fdfind'
 alias video_list='for d in /sys/class/video4linux/*; do echo "$(basename "$d"): $(cat "$d/name")"; done'
 alias start_queue='tmux new-session -d -s queue 2>/dev/null; tmux send-keys -t queue "/home/ap/cloud/master/aris_master/.venv/bin/python3 /home/ap/cloud/master/aris_master/scripts/queue_manager.py" C-m; tmux attach-session -t queue'
-
-alias zrc='source ~/.zshrc'
+alias img_res='identify -format "%wx%h\n"'
+alias cron_log='journalctl -t CRON | grep "($USER)" | tail'
+alias zrc='code ~/.zshrc'
 # --------------------------------- Functions -------------------------------- #
 pipe_cp() {
   local dest="$1"
