@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -13,6 +15,7 @@ alias ssh_local='ssh root@192.168.0.154'
 alias rs='rsync -varzP --info=progress2'
 alias list_png='find . -type f -name "*.png" | wc -l'
 alias queue='tmux new-session -d -s queue 2>/dev/null; tmux send-keys -t queue "/home/ap/cloud/master/aris_master/.venv/bin/python3 /home/ap/cloud/master/aris_master/scripts/queue_manager.py" C-m'
+alias log_cron='journalctl -t CRON | grep "(ap)" | tail'
 #alias aris='cd ~/Documents/ARIS/'
 
 if [ -f ~/aris.bashrc ]; then

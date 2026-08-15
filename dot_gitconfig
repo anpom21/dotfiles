@@ -1,0 +1,13 @@
+[credential]
+	credentialStore = secretservice
+	helper = 
+	helper = /usr/local/bin/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+[user]
+	name = Andreas Pommerencke
+	email = anpom21@student.sdu.dk
+[credential "https://huggingface.co"]
+	provider = generic
+[init]
+	defaultBranch = main

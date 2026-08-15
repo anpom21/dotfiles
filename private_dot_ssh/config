@@ -1,0 +1,18 @@
+Host 10.0.0.105
+  HostName 10.0.0.105
+  User aris
+
+Host 10.0.0.11
+  HostName 10.0.0.11
+  User simon
+
+Host shh
+  HostName shh
+
+Host 10.0.0.12
+  HostName 10.0.0.12
+  User aris
+
+Host server.gazelle-shilling.ts.net
+  HostName server.gazelle-shilling.ts.net
+  User root

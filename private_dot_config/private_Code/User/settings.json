@@ -1,0 +1,96 @@
+{
+  "git.autofetch": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+  },
+  "debug.onTaskErrors": "showErrors",
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false,
+    "python": true
+  },
+  "terminal.integrated.commandsToSkipShell": [
+    "matlab.interrupt"
+  ],
+  "security.workspace.trust.untrustedFiles": "open",
+  "git.confirmSync": false,
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "explorer.confirmPasteNative": false,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "jupyter.askForKernelRestart": false,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "editor.wordWrap": "on",
+  "peacock.favoriteColors": [
+    {
+      "name": "Angular Red",
+      "value": "#dd0531",
+    },
+    {
+      "name": "Azure Blue",
+      "value": "#007fff",
+    },
+    {
+      "name": "JavaScript Yellow",
+      "value": "#f9e64f",
+    },
+    {
+      "name": "Mandalorian Blue",
+      "value": "#1857a4",
+    },
+    {
+      "name": "Node Green",
+      "value": "#215732",
+    },
+    {
+      "name": "React Blue",
+      "value": "#61dafb",
+    },
+    {
+      "name": "Something Different",
+      "value": "#832561",
+    },
+    {
+      "name": "Svelte Orange",
+      "value": "#ff3d00",
+    },
+    {
+      "name": "Vue Green",
+      "value": "#42b883",
+    },
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "python.defaultInterpreterPath": "/bin/python3",
+  "blender.executables": [
+    {
+      "name": "",
+      "path": "/home/ap/.local/share/Steam/steamapps/common/Blender/blender",
+    },
+  ],
+  "terminal.integrated.stickyScroll.enabled": false,
+  "remote.SSH.remotePlatform": {
+    "10.0.0.12": "linux",
+    "10.0.0.11": "linux",
+    "ap-desktop-ubuntu.gazelle-shilling.ts.net": "linux"
+  },
+  "terminal.integrated.suggest.enabled": false,
+  "chat.viewSessions.orientation": "stacked",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "files.associations": {
+    "crontab": "bats"
+  },
+  "workbench.editor.enablePreview": false,
+  "markdown.preview.scrollPreviewWithEditor": false,
+  "workbench.colorTheme": "Dark Modern",
+  "files.autoSave": "afterDelay",
+}
